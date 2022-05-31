@@ -6,6 +6,7 @@ import {
   Explore,
   ForgotPassword,
   Offers,
+  Category,
   Profile,
   SignIn,
   SignUp,
@@ -25,6 +26,7 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
           </Route>
           <Route path="/offers" element={<Offers />} />
+          <Route path="/category/:categoryName" element={<Category />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
