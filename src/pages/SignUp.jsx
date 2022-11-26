@@ -34,6 +34,7 @@ const SignUp = () => {
   const onShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
     try {
@@ -59,6 +60,7 @@ const SignUp = () => {
       toast.error("Something went wrong with registration");
     }
   };
+
   return (
     <>
       <div className="pageContainer">
