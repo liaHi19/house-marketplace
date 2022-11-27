@@ -5,6 +5,11 @@ import { getAuth } from "firebase/auth";
 import { toast } from "react-toastify";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css/bundle";
+
 import { db } from "../firebase";
 import { formatMoney } from "../helpers/formating";
 
@@ -55,7 +60,27 @@ const Listing = () => {
         <Spinner />
       ) : (
         <main>
-          {/* Slider */}
+          <Swiper
+            modules={[Navigation, Pagination, Scrollbar, A11y]}
+            slidesPerView={1}
+            pagination={{ clickable: true }}
+            navigation
+            style={{ height: "400px" }}
+          >
+            {listing.imgUrls.map((url, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <div
+                    className="swiperSlideDiv"
+                    style={{
+                      background: `url(${url}) center no-repeat`,
+                      backgroundSize: "cover",
+                    }}
+                  />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
           <div
             className="shareIconDiv"
             onClick={() => {
