@@ -98,6 +98,7 @@ const CreateListing = () => {
       } catch (error) {
         setLoading(false);
         toast.error(error.message);
+        return;
       }
     } else {
       geolocation.lat = latitude;

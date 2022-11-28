@@ -4,17 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { getAuth, updateProfile } from "firebase/auth";
-import {
-  updateDoc,
-  doc,
-  getDocs,
-  collection,
-  query,
-  where,
-  orderBy,
-  deleteDoc,
-} from "firebase/firestore";
+import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
+
+import useListings from "../hooks/useListings";
 
 import ListingItem from "../components/ListingItem";
 import arrowRight from "../assets/svg/keyboardArrowRightIcon.svg";
@@ -23,8 +16,15 @@ import homeIcon from "../assets/svg/homeIcon.svg";
 const Profile = () => {
   const auth = getAuth();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [listings, setListings] = useState(null);
+  const {
+    listings,
+    loading,
+    onFetchMoreListings,
+    lastFetchedListing,
+    limitNumber,
+    onDelete,
+  } = useListings({ dbField: "userRef", value: auth.currentUser?.uid });
+
   const [changeDetails, setChangeDetails] = useState(false);
   const [formData, setFormData] = useState({
     email: auth.currentUser.email,
@@ -32,27 +32,6 @@ const Profile = () => {
   });
 
   const { email, name } = formData;
-
-  useEffect(() => {
-    const fetchUserListings = async (userId) => {
-      const listingsRef = collection(db, "listings");
-      const q = query(
-        listingsRef,
-        where("userRef", "==", userId),
-        orderBy("timestamp", "desc")
-      );
-      const querySnap = await getDocs(q);
-
-      const documents = querySnap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setListings(documents);
-      setLoading(false);
-    };
-
-    fetchUserListings(auth.currentUser.uid);
-  }, [auth.currentUser?.uid]);
 
   const onLogOut = () => {
     auth.signOut();
@@ -86,19 +65,6 @@ const Profile = () => {
   const onChangeDetails = () => {
     changeDetails && onSubmit();
     setChangeDetails((prev) => !prev);
-  };
-
-  const onDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete?")) {
-      try {
-        await deleteDoc(doc(db, "listings", id));
-        const updatedListings = listings.filter((listing) => listing.id !== id);
-        setListings(updatedListings);
-        toast.success("Successfully deleted listing");
-      } catch (error) {
-        toast.error("Can't delete listing");
-      }
-    }
   };
 
   return (
@@ -147,7 +113,6 @@ const Profile = () => {
                 <ListingItem
                   key={listing.id}
                   listing={listing}
-                  id={listing.id}
                   onDelete={() => onDelete(listing.id)}
                 />
               ))}
@@ -155,6 +120,11 @@ const Profile = () => {
           </>
         )}
       </main>
+      {lastFetchedListing && listings.length % limitNumber === 0 && (
+        <p className="loadMore" onClick={onFetchMoreListings}>
+          Load More
+        </p>
+      )}
     </div>
   );
 };

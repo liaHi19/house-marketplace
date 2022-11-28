@@ -1,57 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import {
-  collection,
-  getDocs,
-  where,
-  query,
-  limit,
-  orderBy,
-  startAfter,
-} from "firebase/firestore";
-import { db } from "../firebase";
-import { toast } from "react-toastify";
+
+import useListings from "../hooks/useListings";
 
 import Spinner from "../components/Spinner";
 import ListingItem from "../components/ListingItem";
 
 const Category = () => {
-  const [listings, setListings] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const params = useParams();
+  const {
+    listings,
+    loading,
+    onFetchMoreListings,
+    lastFetchedListing,
+    limitNumber,
+  } = useListings({ dbField: "type", value: params.categoryName });
 
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        //get reference
-        const listingsRef = collection(db, "listings");
-        //create a query
-        const q = query(
-          listingsRef,
-          where("type", "==", params.categoryName),
-          orderBy("timestamp", "desc"),
-          limit(10)
-        );
-        //execute query
-        const querySnap = await getDocs(q);
-        const listings = [];
-
-        querySnap.forEach((doc) => {
-          return listings.push({
-            id: doc.id,
-            data: doc.data(),
-          });
-        });
-        setListings(listings);
-        setLoading(false);
-      } catch (error) {
-        toast.error("Could not fetch listings");
-      }
-    };
-
-    fetchListings();
-  }, []);
   return (
     <div className="category">
       <header>
@@ -68,14 +32,15 @@ const Category = () => {
           <main>
             <ul className="categoryListings">
               {listings.map((listing) => (
-                <ListingItem
-                  key={listing.id}
-                  listing={listing.data}
-                  id={listing.id}
-                />
+                <ListingItem key={listing.id} listing={listing} />
               ))}
             </ul>
           </main>
+          {lastFetchedListing && listings.length % limitNumber === 0 && (
+            <button className="loadMore" onClick={onFetchMoreListings}>
+              Load More
+            </button>
+          )}
         </>
       ) : (
         <p>No Listings for {params.categoryName}</p>

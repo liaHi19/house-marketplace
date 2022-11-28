@@ -5,12 +5,12 @@ import { ReactComponent as DeleteIcon } from "../assets/svg/deleteIcon.svg";
 import bedIcon from "../assets/svg/bedIcon.svg";
 import bathtubIcon from "../assets/svg/bathtubIcon.svg";
 
-const ListingItem = ({ listing, id, onDelete }) => {
+const ListingItem = ({ listing, onDelete }) => {
   return (
     <li className="categoryListing">
       <Link
         className="categoryListingLink"
-        to={`/category/${listing.type}/${id}`}
+        to={`/category/${listing.type}/${listing.id}`}
       >
         <img
           className="categoryListingImg"

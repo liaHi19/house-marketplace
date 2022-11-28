@@ -1,57 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import {
-  collection,
-  getDocs,
-  where,
-  query,
-  limit,
-  orderBy,
-  startAfter,
-} from "firebase/firestore";
-import { db } from "../firebase";
-import { toast } from "react-toastify";
+import React from "react";
+
+import useListings from "../hooks/useListings";
 
 import Spinner from "../components/Spinner";
 import ListingItem from "../components/ListingItem";
 
 const Offers = () => {
-  const [listings, setListings] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    listings,
+    loading,
+    onFetchMoreListings,
+    lastFetchedListing,
+    limitNumber,
+  } = useListings({ dbField: "offer", value: true });
 
-  const params = useParams();
-
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        //get reference
-        const listingsRef = collection(db, "listings");
-        //create a query
-        const q = query(
-          listingsRef,
-          where("offer", "==", true),
-          orderBy("timestamp", "desc"),
-          limit(10)
-        );
-        //execute query
-        const querySnap = await getDocs(q);
-        const listings = [];
-
-        querySnap.forEach((doc) => {
-          return listings.push({
-            id: doc.id,
-            data: doc.data(),
-          });
-        });
-        setListings(listings);
-        setLoading(false);
-      } catch (error) {
-        toast.error("Could not fetch listings");
-      }
-    };
-
-    fetchListings();
-  }, []);
   return (
     <div className="category">
       <header>
@@ -64,14 +26,15 @@ const Offers = () => {
           <main>
             <ul className="categoryListings">
               {listings.map((listing) => (
-                <ListingItem
-                  key={listing.id}
-                  listing={listing.data}
-                  id={listing.id}
-                />
+                <ListingItem key={listing.id} listing={listing} />
               ))}
             </ul>
           </main>
+          {lastFetchedListing && listings.length % limitNumber === 0 && (
+            <p className="loadMore" onClick={onFetchMoreListings}>
+              Load More
+            </p>
+          )}
         </>
       ) : (
         <p>There are no current offers</p>
