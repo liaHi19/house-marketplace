@@ -6,5 +6,6 @@ export { default as SignIn } from "./SignIn";
 export { default as SignUp } from "./SignUp";
 export { default as Category } from "./Category";
 export { default as CreateListing } from "./CreateListing";
+export { default as EditListing } from "./EditListing";
 export { default as Listing } from "./Listing";
 export { default as Contact } from "./Contact";

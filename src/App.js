@@ -9,6 +9,7 @@ import {
   Category,
   Profile,
   CreateListing,
+  EditListing,
   SignIn,
   SignUp,
   Listing,
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/offers" element={<Offers />} />
           <Route path="/category/:categoryName" element={<Category />} />
           <Route path="/create-listing" element={<CreateListing />} />
+          <Route path="/edit-listing/:listingId" element={<EditListing />} />
           <Route
             path="/category/:categoryName/:listingId"
             element={<Listing />}

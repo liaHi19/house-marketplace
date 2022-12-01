@@ -1,47 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { getDoc, doc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 
-import { db } from "../firebase";
+import { getAuth } from "firebase/auth";
+import useListing from "../hooks/useListing";
+
 import { formatMoney } from "../helpers/formating";
 
 import Spinner from "../components/Spinner";
 import shareIcon from "../assets/svg/shareIcon.svg";
 
 const Listing = () => {
-  const [listing, setListing] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
 
-  const navigate = useNavigate();
-  const params = useParams();
   const auth = getAuth();
-
-  useEffect(() => {
-    const fetchListing = async (id) => {
-      try {
-        const docSnap = await getDoc(doc(db, "listings", id));
-
-        if (docSnap.exists()) {
-          const document = { id: docSnap.id, ...docSnap.data() };
-          setListing(document);
-          setLoading(false);
-        } else {
-          throw new Error("Can't load a listing");
-        }
-      } catch (error) {
-        toast.error(error.message);
-      }
-    };
-    fetchListing(params.listingId);
-  }, [navigate, params.listingId]);
+  const { loading, listing } = useListing();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -55,9 +33,8 @@ const Listing = () => {
 
   return (
     <>
-      {loading ? (
-        <Spinner />
-      ) : (
+      {loading && <Spinner />}{" "}
+      {listing && (
         <main>
           <Swiper
             modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -66,19 +43,21 @@ const Listing = () => {
             navigation
             style={{ height: "400px" }}
           >
-            {listing.imgUrls.map((url, index) => {
-              return (
-                <SwiperSlide key={index}>
-                  <div
-                    className="swiperSlideDiv"
-                    style={{
-                      background: `url(${url}) center no-repeat`,
-                      backgroundSize: "cover",
-                    }}
-                  />
-                </SwiperSlide>
-              );
-            })}
+            {listing &&
+              listing.imgUrls.length > 0 &&
+              listing.imgUrls.map((url, index) => {
+                return (
+                  <SwiperSlide key={index}>
+                    <div
+                      className="swiperSlideDiv"
+                      style={{
+                        background: `url(${url}) center no-repeat`,
+                        backgroundSize: "cover",
+                      }}
+                    />
+                  </SwiperSlide>
+                );
+              })}
           </Swiper>
           <div
             className="shareIconDiv"

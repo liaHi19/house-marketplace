@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   collection,
   getDocs,
@@ -16,8 +17,9 @@ import { toast } from "react-toastify";
 const useListings = ({ dbField, value }, limitNumber = 10) => {
   const [listings, setListings] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [lastFetchedListing, setLastFetchListing] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchListings();
@@ -45,7 +47,6 @@ const useListings = ({ dbField, value }, limitNumber = 10) => {
       setListings(listings);
       setLoading(false);
     } catch (error) {
-      console.log(error);
       toast.error("Could not fetch listings");
     }
   };
@@ -84,11 +85,15 @@ const useListings = ({ dbField, value }, limitNumber = 10) => {
         await deleteDoc(doc(db, "listings", id));
         const updatedListings = listings.filter((listing) => listing.id !== id);
         setListings(updatedListings);
-        toast.success("Successfully deleted listing");
+        toast.success("Listing is deleted successfully");
       } catch (error) {
         toast.error("Can't delete listing");
       }
     }
+  };
+
+  const onEdit = async (listingId) => {
+    navigate(`/edit-listing/${listingId}`);
   };
 
   return {
@@ -98,6 +103,7 @@ const useListings = ({ dbField, value }, limitNumber = 10) => {
     limitNumber,
     onFetchMoreListings,
     onDelete,
+    onEdit,
   };
 };
 

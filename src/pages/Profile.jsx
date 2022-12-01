@@ -23,6 +23,7 @@ const Profile = () => {
     lastFetchedListing,
     limitNumber,
     onDelete,
+    onEdit,
   } = useListings({ dbField: "userRef", value: auth.currentUser?.uid });
 
   const [changeDetails, setChangeDetails] = useState(false);
@@ -114,6 +115,7 @@ const Profile = () => {
                   key={listing.id}
                   listing={listing}
                   onDelete={() => onDelete(listing.id)}
+                  onEdit={() => onEdit(listing.id)}
                 />
               ))}
             </ul>

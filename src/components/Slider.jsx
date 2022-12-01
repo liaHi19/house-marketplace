@@ -42,7 +42,7 @@ const Slider = () => {
   }
 
   return (
-    listings && (
+    listings.length > 0 && (
       <>
         <p className="exploreHeading">Recommended</p>
 
