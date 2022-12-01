@@ -5,14 +5,7 @@ import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 
-import {
-  collection,
-  getDocs,
-  orderBy,
-  query,
-  limit,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs, orderBy, query, limit } from "firebase/firestore";
 import { db } from "../firebase";
 
 import Spinner from "./Spinner";

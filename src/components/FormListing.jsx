@@ -16,7 +16,6 @@ const FormListing = () => {
     offer,
     regularPrice,
     discountedPrice,
-    images,
     latitude,
     longitude,
   } = formData;

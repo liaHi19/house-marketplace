@@ -25,6 +25,7 @@ import { db } from "../firebase";
 const useListing = () => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
+  //eslint-disable-next-line
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
 
   const isMounted = useRef(true);
@@ -78,8 +79,10 @@ const useListing = () => {
         toast.error(error.message);
       }
     };
+
     if (!edit) return;
     fetchListing(params.listingId);
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, params.listingId]);
 
   useEffect(() => {
@@ -95,6 +98,7 @@ const useListing = () => {
     return () => {
       isMounted.current = false;
     };
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
   const onSubmit = async (e) => {

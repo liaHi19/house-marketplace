@@ -23,6 +23,7 @@ const useListings = ({ dbField, value }, limitNumber = 10) => {
 
   useEffect(() => {
     fetchListings();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typeof value === "string" && value]);
 
   const fetchListings = async () => {

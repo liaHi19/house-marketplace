@@ -19,6 +19,7 @@ const EditListing = () => {
       toast.error("You can't edit that listing");
       navigate("/");
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, auth.currentUser?.uid]);
 
   return loading ? <Spinner /> : <FormListing />;

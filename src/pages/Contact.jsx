@@ -8,6 +8,7 @@ import { db } from "../firebase";
 const Contact = () => {
   const [message, setMessage] = useState("");
   const [landlord, setLandLord] = useState(null);
+  //eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
 
   const params = useParams();
